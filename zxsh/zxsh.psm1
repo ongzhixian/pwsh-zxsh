@@ -15,6 +15,7 @@
 
 $Script:PrevPwd = $null
 $Script:BranchName = $null
+$Script:GitBranchExitCode = $null
 
 Function Set-Title { (Get-Host).UI.RawUI.WindowTitle = $args }
 
@@ -23,9 +24,10 @@ Function Prompt {
     if ($Script:PrevPwd -ne $current_path)
     {
         $Script:BranchName = $(git branch --show-current)
+        $Script:GitBranchExitCode = $LASTEXITCODE
         $Script:PrevPwd = $current_path
     }    
-    "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($LASTEXITCODE -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
+    "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($Script:GitBranchExitCode -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
 }
 
 New-Alias -Name title -Value Set-Title
