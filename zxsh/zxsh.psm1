@@ -1,25 +1,54 @@
+# Main (basic) module
+
+$Script:PrevPwd             = $null
+$Script:BranchName          = $null
+$Script:GitBranchExitCode   = $null
+
 <#
- .Synopsis
-  Set title of console Window
+    .Synopsis
+    Set title of console Window
 
- .Description
-  Set title of console Window
+    .Description
+    Set title of console Window
 
- .Parameter $args
-  Set title of console Window to $args
+    .Parameter $args
+    Set title of console Window to $args
 
- .Example
-   # Set title of console Window to 'ps7'
-   Title ps7
+    .INPUTS
+    $args. Your arguments will be displayed as title of the window.
+    
+    .OUTPUTS
+    None.
+    
+    .Example
+    C:\PS> title ps7
+    
+    Set title of console window to 'ps7'
+
+    .Link
+    None
 #>
+function Set-Title {
+    (Get-Host).UI.RawUI.WindowTitle = $args
+}
 
-$Script:PrevPwd = $null
-$Script:BranchName = $null
-$Script:GitBranchExitCode = $null
+<#
+    .Synopsis
+    Set the prompt of PowerShell host
 
-Function Set-Title { (Get-Host).UI.RawUI.WindowTitle = $args }
+    .Description
+    Set the format of the prompt of PowerShell host
 
-Function Prompt {
+    .INPUTS
+    None.
+
+    .OUTPUTS
+    None.
+
+    .Link
+    None
+#>
+function Prompt {
     $current_path = (Get-Location).Path
     if ($Script:PrevPwd -ne $current_path)
     {
@@ -30,7 +59,10 @@ Function Prompt {
     "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($Script:GitBranchExitCode -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
 }
 
-New-Alias -Name title -Value Set-Title
+
+if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
+    New-Alias -Name title -Value Set-Title
+}
 
 # Module member export definitions
 Export-ModuleMember -Function Set-Title, Prompt
