@@ -1,35 +1,33 @@
 # Functions
-# 1. Get-Node
-# 2. Add-Node
-# 3. Update-Node
-# 4. Remove-Node
+# 1. Get-HashtableEntry
+# 2. Add-HashtableEntry
+# 3. Update-HashtableEntry
+# 4. Remove-HashtableEntry
 
-function Get-Node {
+function Get-HashtableEntry {
     param (
-        [Parameter(Mandatory)]
-        [object[]] $nodeName,
-        [Parameter(Mandatory)]
-        [System.Collections.Hashtable] $tree
+        [Parameter(Mandatory)][System.Collections.Hashtable] $ht,
+        [Parameter(Mandatory)][object[]] $branch
     )
-
     $result = $null
 
-    Write-Debug "location is $nodeName, $($nodeName.GetType().ToString()), length is $($nodeName.Length)"
+    Write-Host "Get-HashtableEntry [location]=[$branch]"
 
-    if ($nodeName.Length -le 0)
+    # Not needed anymore; handled by [Parameter(Mandatory)]
+    # if ($branch.Length -le 0)
+    # {
+    #     return $null
+    # }
+
+    if ($ht.ContainsKey($branch[0]))
     {
-        return $null
-    }
+        $result = $ht[$branch[0]]
 
-    if ($tree.ContainsKey($nodeName[0]))
-    {
-        $result = $tree[$nodeName[0]]
-
-        for ($i = 1; $i -lt $nodeName.Length; $i++) 
+        for ($i = 1; $i -lt $branch.Length; $i++) 
         {
-            if ($result.ContainsKey($nodeName[$i]))
+            if ($result.ContainsKey($branch[$i]))
             {
-                $result = $result[$nodeName[$i]]
+                $result = $result[$branch[$i]]
             }
             else 
             {
@@ -42,27 +40,93 @@ function Get-Node {
 }
 
 
-function Add-Node {
+function Add-HashtableEntry {
     param (
-        [Parameter(Mandatory)]
-        [object[]] $nodeName,
-        [Parameter(Mandatory)]
-        [System.Collections.Hashtable] $tree,
-        $key,
-        $value
+        [Parameter(Mandatory)][System.Collections.Hashtable] $ht,
+        [Parameter(Mandatory)][object[]] $branch,
+        [Parameter(Mandatory)] $key,
+        [Parameter(Mandatory)] $value
     )
 
-    Write-Debug "In Add-Node"
-    Write-Debug "Add-Node[location]  $nodeName"
-    Write-Debug "Add-Node[key]       $key"
-    Write-Debug "Add-Node[value]     $value"
+    Write-Host "Add-HashtableEntry [location]=[$branch] [key]=[$key] [value]=[$value]"
 
-    $node = Get-Node $nodeName $tree
-    if ($null -eq $node)
+    $node = $null
+    if ([string]::IsNullOrEmpty($branch[0]))
     {
-        Write-Error "Target node not found."
-        return
+        $node = $ht
+        
+    }
+    else
+    {
+        $node = Get-HashtableEntry $ht $branch
+        if ($null -eq $node)
+        {
+            return
+        }
+    }
+    
+    $node[$key] = $value
+}
+
+
+function Update-HashtableEntry {
+    param (
+        [Parameter(Mandatory)][System.Collections.Hashtable] $ht,
+        [Parameter(Mandatory)][object[]] $branch,
+        [Parameter(Mandatory)]$key,
+        [Parameter(Mandatory)]$value
+    )
+
+    Write-Host "Update-HashtableEntry [location]=[$branch] [key]=[$key] [value]=[$value]"
+
+    $node = $null
+
+    if ([string]::IsNullOrEmpty($branch[0]))
+    {
+        $node = $ht
+    }
+    else
+    {
+        $node = Get-HashtableEntry $ht $branch
+        if ($null -eq $node)
+        {
+            return
+        }
     }
 
-    $node[$key] = $value
+    if ($node.ContainsKey($key))
+    {
+        $node[$key] = $value
+    }
+}
+
+
+function Remove-HashtableEntry {
+    param (
+        [Parameter(Mandatory)][System.Collections.Hashtable] $ht,
+        [Parameter(Mandatory)][object[]] $branch,
+        [Parameter(Mandatory)] $key
+    )
+
+    Write-Host "Remove-HashtableEntry [location]=[$branch] [key]=[$key]"
+
+    $node = $null
+
+    if ([string]::IsNullOrEmpty($branch[0]))
+    {
+        $node = $ht
+    }
+    else
+    {
+        $node = Get-HashtableEntry $ht $branch
+        if ($null -eq $node)
+        {
+            return
+        }
+    }
+
+    if ($node.ContainsKey($key))
+    {
+        $node.Remove($key)
+    }
 }
