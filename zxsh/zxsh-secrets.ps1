@@ -1,7 +1,64 @@
 # Functions
-# 1.    Display secrets
-# 2.    Get-Secret
-# 3.    Add-Secret
+# 1. Get-Secret
+# 2. Add-Secret
+# 3. Update-Secret
+# 4. Remove-Secret
+
+function Hide-Secrets {
+    $Script:secrets = $null
+}
+function Save-Secrets {
+    Write-Host "Save secrets"
+
+    ConvertTo-Json $Script:secrets
+
+    ConvertTo-Json $Script:secrets | Out-File $Script:secretFilePath
+
+}
+function Restore-Secrets {
+    # Function to load secrets from file
+
+    # Create secrets file if it does not exists
+    if (-not [System.IO.File]::Exists($Script:secretFilePath))
+    {
+        $Script:secrets = @{}
+        #ConvertTo-Json $Script:secrets | Out-File $Script:secretFilePath
+        Save-Secrets
+    }
+
+    # ZX: Oops! Forgot we are not working with JSON directly.
+    # We want hashtables
+    # Load JSON from file as a PSCustomObject
+    $psObj = ConvertFrom-Json (Get-Content $Script:secretFilePath -Raw )
+
+    # Then, convert PSCustomObject to a HashTable
+    $Script:secrets = @{}
+    foreach($property in $psObj.PSObject.Properties.Name)
+    {
+        $Script:secrets[$property] = $psObj.$property
+    }
+
+    # $Script:secrets = Import-Clixml -Path $Script:secretFilePath
+    # else {
+        
+    #     $Script:secrets = @{
+    #         "GoDaddy" = @{
+    #             "ote" = @{
+    #                 "zhixian" = "asddsa";
+    #                 "account2" = "asdad";
+    #             };
+    #             "production" = @{
+        
+    #             };
+    #         };
+    #         "Google" = @{
+    #             "Dummy"= "dummy-value";
+    #         };
+        
+    #         "Status" = "Done";
+    #     }
+    # }
+}
 
 
 ########################################
@@ -39,7 +96,11 @@
     None
 #>
 function Get-Secrets {
+    Restore-Secrets
+
     ConvertTo-Json $Script:secrets
+
+    Hide-Secrets
 }
 
 
@@ -97,7 +158,7 @@ function Get-Secret {
         [object[]] $location
     )
 
-    return (Get-Node $location $Script:secrets)
+    return (Get-HashtableEntry $Script:secrets $location)
 }
 
 
@@ -111,10 +172,12 @@ function Get-Secret {
     Add secret to specified location
 
     .INPUTS
-    Array of Ids
+    Array of Ids for the location to add secret
+    Name of key
+    Value
 
     .OUTPUTS
-    Secret in table format.
+    N/A
 
     .Example
     C:\PS> Add-Secret @("GoDaddy", "ote") "NewNode" "NewNodeValue"
@@ -143,9 +206,129 @@ function Add-Secret {
     param (
         [Parameter(Mandatory)]
         [object[]] $location,
+        [Parameter(Mandatory)]
         $key,
-        $value
+        $value = $null
+    )
+    
+    try {
+        
+        Restore-Secrets
+        Write-Host "Adding to [$(ConvertTo-Json $Script:secrets)]"
+        
+        $result = (Add-HashtableEntry $Script:secrets $location $key $value)
+        Save-Secrets
+        return $result
+    }
+    catch {
+        Write-Error $_.Exception
+    }
+    finally {
+        Hide-Secrets
+    }
+}
+
+
+########################################
+# 3. Update-Secret
+<#
+    .Synopsis
+    Update secret at specified location
+
+    .Description
+    Update secret to specified location
+
+    .INPUTS
+    Array of Ids for the location to add secret
+    Name of key
+    Value
+
+    .OUTPUTS
+    N/A
+
+    .Example
+    C:\PS> Update-Secret @("GoDaddy", "ote")  "NewNode" "SomeUpdatedNewNodeValue"
+    C:\PS> Get-Secrets
+    {
+        "GoDaddy": {
+            "ote": {
+                "NewNode": "SomeUpdatedNewNodeValue",
+                "account2": "asdad",
+                "zhixian": "asddsa"
+            },
+            "production": {}
+        },
+        "Google": {
+            "Dummy": "dummy-value"
+        },
+        "Status": "Done"
+    }
+
+    Update value of key "NewNode" to "SomeUpdatedNewNodeValue" under GoDaddy, ote.
+
+    .Link
+    None
+#>
+function Update-Secret {
+    param (
+        [Parameter(Mandatory)]
+        [object[]] $location,
+        [Parameter(Mandatory)]
+        $key,
+        $value = $null
     )
 
-    return (Add-Node $location $Script:secrets $key $value)
+    return (Update-HashtableEntry $Script:secrets $location $key $value)
+}
+
+
+########################################
+# 4. Remove-Secret
+<#
+    .Synopsis
+    Remove secret at specified location
+
+    .Description
+    Remove secret to specified location
+
+    .INPUTS
+    Array of Ids for the location to add secret
+    Name of key
+    Value
+
+    .OUTPUTS
+    N/A
+
+    .Example
+    C:\PS> Remove-Secret @("GoDaddy", "ote") "Zhixian"
+    C:\PS> Get-Secrets
+    {
+        "GoDaddy": {
+            "ote": {
+                "NewNode": "SomeUpdatedNewNodeValue",
+                "account2": "asdad",
+                "zhixian": "asddsa"
+            },
+            "production": {}
+        },
+        "Google": {
+            "Dummy": "dummy-value"
+        },
+        "Status": "Done"
+    }
+
+    Remove the key-value pair with key "zhixian" under GoDaddy, ote.
+
+    .Link
+    None
+#>
+function Remove-Secret {
+    param (
+        [Parameter(Mandatory)]
+        [object[]] $location,
+        [Parameter(Mandatory)]
+        $key
+    )
+
+    return (Remove-HashtableEntry $Script:secrets $location $key)
 }

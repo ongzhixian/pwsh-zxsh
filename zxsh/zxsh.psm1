@@ -19,30 +19,30 @@ if ($false -eq [System.IO.Directory]::Exists($Script:profilePath))
     New-Item $Script:profilePath -ItemType Directory
 }
 
-$Script:secretFilePath = Join-Path $Script:profilePath "zxsh-secrets.jsonx"
-if ([System.IO.File]::Exists($Script:secretFilePath))
-{
-    $Script:secrets = Import-Clixml -Path $Script:secretFilePath
-}
-else {
-    $Script:secrets = @{}
-    $Script:secrets = @{
-        "GoDaddy" = @{
-            "ote" = @{
-                "zhixian" = "asddsa";
-                "account2" = "asdad";
-            };
-            "production" = @{
+$Script:secretFilePath = Join-Path $Script:profilePath "test-zxsh-secrets.json"
+# if ([System.IO.File]::Exists($Script:secretFilePath))
+# {
+#     $Script:secrets = Import-Clixml -Path $Script:secretFilePath
+# }
+# else {
+#     $Script:secrets = @{}
+#     $Script:secrets = @{
+#         "GoDaddy" = @{
+#             "ote" = @{
+#                 "zhixian" = "asddsa";
+#                 "account2" = "asdad";
+#             };
+#             "production" = @{
     
-            };
-        };
-        "Google" = @{
-            "Dummy"= "dummy-value";
-        };
+#             };
+#         };
+#         "Google" = @{
+#             "Dummy"= "dummy-value";
+#         };
     
-        "Status" = "Done";
-    }
-}
+#         "Status" = "Done";
+#     }
+# }
 
 ########################################
 # Source functions into module
@@ -52,14 +52,18 @@ else {
 # 2.    Prompt
 . (Join-Path $PSScriptRoot zxsh-default.ps1)
 
-# zxsh-hashtable.ps1
-# 1.    Get-Secrets
-# 2.    
+# Functions
+# 1. Get-HashtableEntry
+# 2. Add-HashtableEntry
+# 3. Update-HashtableEntry
+# 4. Remove-HashtableEntry
 . (Join-Path $PSScriptRoot zxsh-hashtable.ps1)
 
-# zxsh-secrets.ps1
-# 1.    Get-Secrets
-# 2.    
+# Functions
+# 1. Get-Secret
+# 2. Add-Secret
+# 3. Update-Secret
+# 4. Remove-Secret
 . (Join-Path $PSScriptRoot zxsh-secrets.ps1)
 
 
@@ -76,7 +80,7 @@ if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
 
 # Functions
 Export-ModuleMember -Function Set-Title, Prompt
-Export-ModuleMember -Function Get-Secrets, Get-Secret, Add-Secret
+Export-ModuleMember -Function Get-Secrets, Get-Secret, Add-Secret, Update-Secret, Remove-Secret
 
 # Aliases
 Export-ModuleMember -Alias title
