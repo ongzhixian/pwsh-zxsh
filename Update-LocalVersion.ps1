@@ -14,10 +14,16 @@ switch ($env:COMPUTERNAME)
         break
     }
 
+    "SG00-L4579" {
+        Get-ChildItem 'C:\Apps\PwshRepository' | Where-Object { $_.Name -like 'zxsh*' } | ForEach-Object { Remove-Item $_ }
+        Publish-Module -Path 'C:\src\pwsh-zxsh\code\zxsh' -Repository 'pwsh-repository' -Force
+        Install-Module 'zxsh' -Repository 'pwsh-repository' -Force -AllowClobber
+        Import-Module zxsh -Force
+        break
+    }
+
     default {
         Write-Error "No setup found for $($env:COMPUTERNAME)"
     }
 
 }
-
-
