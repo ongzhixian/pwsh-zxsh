@@ -54,11 +54,12 @@ function Set-Title {
 #>
 function Prompt {
     $current_path = (Get-Location).Path
-    if ($Script:PrevPwd -ne $current_path)
+    $last_command = (Get-History -Count 1)
+    if ((($null -ne $last_command) -And ($last_command.CommandLine.Trim().ToLowerInvariant() -match "git\s+checkout\s+.+")) -Or ($Script:PrevPwd -ne $current_path)) 
     {
         $Script:BranchName = $(git branch --show-current)
         $Script:GitBranchExitCode = $LASTEXITCODE
         $Script:PrevPwd = $current_path
-    }    
+    }
     "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($Script:GitBranchExitCode -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
 }
