@@ -10,6 +10,9 @@ $Script:profilePath         = $null
 $Script:secretFilePath      = $null
 $Script:secrets             = $null
 
+[System.Security.SecureString] 
+$Script:passPhrase          = $null
+
 ########################################
 # Initialize script variables
 
