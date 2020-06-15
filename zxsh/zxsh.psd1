@@ -69,7 +69,7 @@ PowerShellVersion = '7.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @("Set-Title", "Prompt", "Get-Secrets", "Get-Secret", "Add-Secret", "Update-Secret", "Remove-Secret")
+FunctionsToExport = @("Set-Title", "Prompt", "Get-Secrets", "Get-Secret", "Add-Secret", "Update-Secret", "Remove-Secret", "Get-RandomBytes")
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -87,7 +87,7 @@ AliasesToExport = @("title")
 # ModuleList = @()
 
 # List of all files packaged with this module
-FileList = @('zxsh.psm1', 'zxsh-default.ps1', 'zxsh-hashtable.ps1',  'zxsh-secrets.ps1')
+FileList = @('zxsh.psm1', 'zxsh-default.ps1', 'zxsh-hashtable.ps1',  'zxsh-secrets.ps1', 'zxsh-cryptography.ps1')
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{

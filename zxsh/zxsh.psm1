@@ -69,6 +69,9 @@ $Script:secretFilePath = Join-Path $Script:profilePath "test-zxsh-secrets.json"
 # 4. Remove-Secret
 . (Join-Path $PSScriptRoot zxsh-secrets.ps1)
 
+# Functions
+. (Join-Path $PSScriptRoot zxsh-cryptography.ps1)
+
 
 ########################################
 # Define aliases
@@ -84,6 +87,7 @@ if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
 # Functions
 Export-ModuleMember -Function Set-Title, Prompt
 Export-ModuleMember -Function Get-Secrets, Get-Secret, Add-Secret, Update-Secret, Remove-Secret
+Export-ModuleMember -Function Get-RandomBytes
 
 # Aliases
 Export-ModuleMember -Alias title
