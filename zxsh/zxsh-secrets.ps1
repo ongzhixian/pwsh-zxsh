@@ -8,9 +8,10 @@ function Hide-Secrets {
     $Script:secrets = $null
 }
 function Save-Secrets {
-    Write-Host "Save secrets"
+    #Write-Host "Save secrets"
 
-    ConvertTo-Json $Script:secrets
+    # ConvertTo-Json $Script:secrets
+    # TODO: Add encryption here
 
     ConvertTo-Json $Script:secrets | Out-File $Script:secretFilePath
 
@@ -25,6 +26,19 @@ function Restore-Secrets {
         #ConvertTo-Json $Script:secrets | Out-File $Script:secretFilePath
         Save-Secrets
     }
+
+    if (($null -eq $Script:passPhrase) -or ($Script:passPhrase.Length -eq 0))
+    {
+        $Script:passPhrase = Read-Host -Prompt "Enter shell password" -AsSecureString
+        if ($Script:passPhrase.Length -eq 0) 
+        {
+            # User did not type in anything
+            return
+        }
+    }
+
+    # TODO: Else do decrypt
+    
 
     # ZX: Oops! Forgot we are not working with JSON directly.
     # We want hashtables
@@ -96,9 +110,20 @@ function Restore-Secrets {
     None
 #>
 function Get-Secrets {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [switch]$JSON = $false
+    )
+
     Restore-Secrets
 
-    ConvertTo-Json $Script:secrets
+    if ($JSON)
+    {
+        ConvertTo-Json $Script:secrets
+    } else {
+        $Script:secrets
+    }
 
     Hide-Secrets
 }
@@ -199,13 +224,18 @@ function Get-Secret {
 
     Add a new key-value pair under GoDaddy, ote.
 
+    .Example
+    C:\PS> Add-Secret "" "goDaddy" "asdasd"
+
+    .Example
+    C:\PS> Add-Secret -key "goDaddy3" -value "asdasd"
+
     .Link
     None
 #>
 function Add-Secret {
     param (
-        [Parameter(Mandatory)]
-        [object[]] $location,
+        [object[]] $location = @(""),
         [Parameter(Mandatory)]
         $key,
         $value = $null
@@ -214,10 +244,13 @@ function Add-Secret {
     try {
         
         Restore-Secrets
+
         Write-Host "Adding to [$(ConvertTo-Json $Script:secrets)]"
         
         $result = (Add-HashtableEntry $Script:secrets $location $key $value)
+        
         Save-Secrets
+        
         return $result
     }
     catch {
