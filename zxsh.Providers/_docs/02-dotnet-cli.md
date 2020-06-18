@@ -1,6 +1,6 @@
 # dotnet CLI
 
-dotnet sln add DropboxProvider
+dotnet sln add zxsh.Providers
 
 dotnet add package PowerShellStandard.Library --version 5.1.0
 

@@ -66,7 +66,7 @@ PowerShellVersion = '7.0'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-NestedModules = @('DropboxProvider.dll', 'zxsh-dropboxProvider.psm1')
+NestedModules = @('zxsh.Providers.dll')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @("Set-Title", "Prompt", "Get-Secrets", "Get-Secret", "Add-Secret", "Update-Secret", "Remove-Secret", "Get-RandomBytes")
