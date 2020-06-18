@@ -72,6 +72,8 @@ $Script:secretFilePath = Join-Path $Script:profilePath "test-zxsh-secrets.json"
 # Functions
 . (Join-Path $PSScriptRoot zxsh-cryptography.ps1)
 
+# Classes
+# . (Join-Path $PSScriptRoot zxsh-dropboxProvider.ps1)
 
 ########################################
 # Define aliases
