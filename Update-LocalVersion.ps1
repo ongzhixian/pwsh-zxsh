@@ -24,7 +24,7 @@ switch ($env:COMPUTERNAME)
 
     "ACADIAN" {
         Get-ChildItem 'D:\Apps\PwshRepository' | Where-Object { $_.Name -like 'zxsh*' } | ForEach-Object { Remove-Item $_ }
-        Publish-Module -Path 'D:\src\github.com\ongzhixian\pwsh-zxsh\code' -Repository 'pwsh-repository' -Force
+        Publish-Module -Path 'D:\src\github.com\ongzhixian\pwsh-zxsh\code\zxsh' -Repository 'pwsh-repository' -Force
         Install-Module 'zxsh' -Repository 'pwsh-repository' -Force -AllowClobber
         Import-Module zxsh -Force
         break
