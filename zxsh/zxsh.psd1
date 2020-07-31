@@ -12,7 +12,7 @@
 RootModule = 'zxsh'
 
 # Version number of this module.
-ModuleVersion = '0.0.2'
+ModuleVersion = '0.0.3'
 
 # Supported PSEditions
 CompatiblePSEditions = @("Core")
@@ -87,7 +87,7 @@ AliasesToExport = @("title")
 # ModuleList = @()
 
 # List of all files packaged with this module
-FileList = @('zxsh.psm1')
+FileList = @('zxsh.psm1', 'zxsh-functions.ps1')
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{

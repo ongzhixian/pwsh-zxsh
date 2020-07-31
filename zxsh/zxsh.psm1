@@ -1,37 +1,57 @@
 <#
- .Synopsis
-  Set title of console Window
+    .Description
+    Main (basic) module
 
- .Description
-  Set title of console Window
+    Sections:
 
- .Parameter $args
-  Set title of console Window to $args
-
- .Example
-   # Set title of console Window to 'ps7'
-   Title ps7
+    1.  Script variable(s) declaration
+    2.  Script variable(s) initialization
+    3.  Source function(s)
+    4.  Define alias(es)
+    5.  Module member export definitions
+    
 #>
 
-$Script:PrevPwd = $null
-$Script:BranchName = $null
-$Script:GitBranchExitCode = $null
+########################################
+# 1.  Script variable(s) declaration
 
-Function Set-Title { (Get-Host).UI.RawUI.WindowTitle = $args }
+$Script:PrevPwd             = $null
+$Script:BranchName          = $null
+$Script:GitBranchExitCode   = $null
 
-Function Prompt {
-    $current_path = (Get-Location).Path
-    if ($Script:PrevPwd -ne $current_path)
-    {
-        $Script:BranchName = $(git branch --show-current)
-        $Script:GitBranchExitCode = $LASTEXITCODE
-        $Script:PrevPwd = $current_path
-    }    
-    "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($Script:GitBranchExitCode -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
+
+########################################
+# 2.  Script variable(s) initialization
+
+$Script:profilePath = [System.IO.Path]::GetDirectoryName($PROFILE)
+if ($false -eq [System.IO.Directory]::Exists($Script:profilePath))
+{
+    New-Item $Script:profilePath -ItemType Directory
 }
 
-New-Alias -Name title -Value Set-Title
 
-# Module member export definitions
+########################################
+# 3.  Source function(s)
+
+# zxsh-functions.ps1
+# 1.    Set-Title
+# 2.    Prompt
+. (Join-Path $PSScriptRoot zxsh-functions.ps1)
+
+
+########################################
+# 4.  Define alias(es)
+
+if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
+    New-Alias -Name title -Value Set-Title
+}
+
+
+########################################
+# 5.  Module member export definitions
+
+# Functions
 Export-ModuleMember -Function Set-Title, Prompt
+
+# Aliases
 Export-ModuleMember -Alias title
