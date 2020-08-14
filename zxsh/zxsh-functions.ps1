@@ -45,3 +45,13 @@ Function Prompt {
     }
     "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($Script:GitBranchExitCode -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
 }
+
+
+Function Get-EmptyFolders {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [switch] $Recurse = $true
+    )
+    Get-ChildItem -Directory -Recurse:$Recurse | Where-Object { ($_.GetFiles().Count -eq 0) -and ($_.GetDirectories().Count -eq 0) } | Sort-Object { $_.FullName } | Select-Object FullName
+}
