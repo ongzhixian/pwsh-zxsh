@@ -51,7 +51,10 @@ Function Get-EmptyFolders {
     [CmdletBinding()]
     param (
         [Parameter()]
+        [string] $Path = ".",
+        [Parameter()]
         [switch] $Recurse = $true
     )
-    Get-ChildItem -Directory -Recurse:$Recurse | Where-Object { ($_.GetFiles().Count -eq 0) -and ($_.GetDirectories().Count -eq 0) } | Sort-Object { $_.FullName } | Select-Object FullName
+    
+    Get-ChildItem -Path $Path -Directory -Recurse:$Recurse | Where-Object { ($_.GetFiles().Count -eq 0) -and ($_.GetDirectories().Count -eq 0) } | Sort-Object { $_.FullName } | Select-Object FullName
 }
