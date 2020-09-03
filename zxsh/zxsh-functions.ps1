@@ -46,7 +46,13 @@ Function Prompt {
     "`e[32m$env:USERDOMAIN>$env:USERNAME`e[39m $PWD $(if ($Script:GitBranchExitCode -eq 0) { "`e[36m($Script:BranchName)`e[39m" })`nPS> "
 }
 
+<#
+    .SYNOPSIS
+    Get-EmptyFolders
 
+    .DESCRIPTION
+    List all empty folders in a given path recursively.
+#>
 Function Get-EmptyFolders {
     [CmdletBinding()]
     param (

@@ -3,7 +3,8 @@
 switch ($env:COMPUTERNAME)
 {
     "ZOGA330" {
-        Write-Error "Not implemented for $($env:COMPUTERNAME)"
+        $apiKey = (Get-Content "C:\Users\zhixian\Documents\PowerShell\powershell-gallery-zxsh-api-key.txt")
+        Publish-Module -Name zxsh -NuGetApiKey $apiKey
         break
     }
 
