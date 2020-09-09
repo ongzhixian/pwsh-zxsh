@@ -112,6 +112,8 @@ Function Get-DateTimeDiff {
     [DateTime] $dt1 = [DateTime]::MaxValue
     [DateTime] $dt2 = [DateTime]::MaxValue
 
+    # ZX: Consider making $dt2 default as epoch if its not specified
+
     try {
         $dt1 = [DateTime]::Parse($StartDateTime)
     }
