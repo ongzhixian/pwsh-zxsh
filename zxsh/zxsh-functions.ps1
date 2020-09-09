@@ -74,3 +74,72 @@ Function Get-EmptyFolders {
     
     Get-ChildItem -Path $Path -Directory -Recurse:$Recurse | Where-Object { ($_.GetFiles().Count -eq 0) -and ($_.GetDirectories().Count -eq 0) } | Sort-Object { $_.FullName } | Select-Object FullName
 }
+
+
+<#
+    .SYNOPSIS
+    Get-DateTimeDiff
+
+    .DESCRIPTION
+    Return a timespan
+
+    .EXAMPLE
+    # 
+    Get-DateTimeDiff
+
+    .EXAMPLE
+    # 
+    Get-DateTimeDiff "2020-04-01 07:24:21.28276"
+
+    .EXAMPLE
+    # 
+    Get-DateTimeDiff "2020-04-01 07:24:21.28276" "2020-04-01 07:24:39.74670"
+    
+    .EXAMPLE
+    # 
+    Get-DateTimeDiff "2020-04-01 07:24:39.74670" "2020-04-01 07:24:21.28276" 
+    
+#>
+Function Get-DateTimeDiff {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $StartDateTime,
+        [Parameter()]
+        [string] $EndDateTime=$null
+    )
+
+    [DateTime] $dt1 = [DateTime]::MaxValue
+    [DateTime] $dt2 = [DateTime]::MaxValue
+
+    try {
+        $dt1 = [DateTime]::Parse($StartDateTime)
+    }
+    catch {
+        Write-Host "Invalid date-time string [$StartDateTime]"
+        exit(-1)        
+    }
+
+    if ($EndDateTime)
+    {
+        try {
+            $dt2 = [DateTime]::Parse($EndDateTime)
+        }
+        catch {
+            Write-Host "Invalid date-time string [$EndDateTime]"
+            exit(-1)        
+        }
+    }
+    
+    # Write-Host $dt1 $dt2
+
+    if ($dt1 -ge $dt2) 
+    {
+        # Write-Host "1 > 2"
+        # Write-Host $dt1-$dt2
+        return ($dt1-$dt2)
+    }
+    else {
+        return ($dt2-$dt1)
+    }
+}
