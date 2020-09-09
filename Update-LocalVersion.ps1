@@ -16,7 +16,7 @@ switch ($env:COMPUTERNAME)
 
     "SG00-L4579" {
         Get-ChildItem 'C:\Apps\PwshRepository' | Where-Object { $_.Name -like 'zxsh*' } | ForEach-Object { Remove-Item $_ }
-        Publish-Module -Path 'C:\src\pwsh-zxsh\code\zxsh' -Repository 'pwsh-repository' -Force
+        Publish-Module -Path 'C:\src\zong\pwsh-zxsh\code\zxsh' -Repository 'pwsh-repository' -Force
         Install-Module 'zxsh' -Repository 'pwsh-repository' -Force -AllowClobber
         Import-Module zxsh -Force
         break
