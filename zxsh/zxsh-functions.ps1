@@ -52,8 +52,18 @@ Function Prompt {
 
     .DESCRIPTION
     List all empty folders in a given path recursively.
+
+    .EXAMPLE
+    # Recursively list all empty folders starting from current folder  
+    Get-EmptyFolders
+
+    .EXAMPLE
+    # Recursively list all empty folders starting from stated folder C:\temp
+    Get-EmptyFolders C:\temp
 #>
 Function Get-EmptyFolders {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidDefaultValueSwitchParameter', Scope='Function', Target='Recurse', 
+        Justification='We intentionally want this to be the default behaviour')]
     [CmdletBinding()]
     param (
         [Parameter()]
