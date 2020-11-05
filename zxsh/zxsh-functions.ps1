@@ -74,3 +74,19 @@ Function Get-EmptyFolders {
     
     Get-ChildItem -Path $Path -Directory -Recurse:$Recurse | Where-Object { ($_.GetFiles().Count -eq 0) -and ($_.GetDirectories().Count -eq 0) } | Sort-Object { $_.FullName } | Select-Object FullName
 }
+
+
+<#
+    .SYNOPSIS
+    Reset-Color
+
+    .DESCRIPTION
+    Reset the color of the console to default
+
+    .EXAMPLE
+    # Reset the color of the console to default
+    Reset-Color
+#>
+Function Reset-Color {
+    [Console]::ResetColor()
+}
