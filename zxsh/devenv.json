@@ -1,0 +1,15 @@
+{
+  "SG00-L4579": {
+    "node": {
+      "path": "C:\\Apps\\nodejs\\node.exe",
+      "version": "v10.23.0"
+    },
+    "npm": {
+      "path": "C:\\Apps\\nodejs\\npm C:\\Apps\\nodejs\\npm.cmd C:\\Users\\zong\\AppData\\Roaming\\npm\\npm C:\\Users\\zong\\AppData\\Roaming\\npm\\npm.cmd",
+      "version": "6.14.6"
+    },
+    "appcmd": {
+      "path": "C:\\Windows\\System32\\inetsrv\\appcmd.exe"
+    }
+  }
+}
