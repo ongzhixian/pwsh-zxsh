@@ -18,6 +18,7 @@
 $Script:PrevPwd             = $null
 $Script:BranchName          = $null
 $Script:GitBranchExitCode   = $null
+$Script:DevCmds             = $null
 
 
 ########################################
@@ -28,6 +29,33 @@ if ($false -eq [System.IO.Directory]::Exists($Script:profilePath))
 {
     New-Item $Script:profilePath -ItemType Directory
 }
+
+$devCmdsFilePath = Join-Path $Script:profilePath "devCmds.json"
+
+if (Test-Path $devCmdsFilePath)
+{
+    $Script:DevCmds = ConvertFrom-Json (Get-Content $devCmdsFilePath -Raw) -AsHashTable
+}
+else
+{
+    Write-Host "File $devCmdsFilePath not found."
+
+    if (Assert-AdminRights)
+    {
+        # Write-Host "User has no administrative rights which are required for this script to work correctly."
+        $Script:DevCmds = Build-DevCmds
+
+        Write-Host "Output to $devCmdsFilePath"
+
+        ConvertTo-Json $Script:DevCmds  | Out-File $devCmdsFilePath
+
+        Write-Host "$devCmdsFilePath saved."
+        
+    } else {
+        Write-Host "User has no administrative rights which are required for Build-DevCmds; Skipping Build-DevCmds"
+    }
+}
+
 
 
 ########################################
@@ -51,7 +79,7 @@ if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
 # 5.  Module member export definitions
 
 # Functions
-Export-ModuleMember -Function Set-Title, Prompt, Get-EmptyFolders, Reset-Color, Assert-AdminRights
+Export-ModuleMember -Function Set-Title, Prompt, Get-EmptyFolders, Reset-Color
 
 # Aliases
 Export-ModuleMember -Alias title

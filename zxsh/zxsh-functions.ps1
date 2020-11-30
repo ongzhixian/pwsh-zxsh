@@ -105,3 +105,67 @@ Function Reset-Color {
 Function Assert-AdminRights {
     return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+
+Function Find-DevCmd {
+    param (
+        [Parameter(Mandatory)]
+        [string] $cmd_name
+    )
+
+    # Assuming on Windows (so we use `where.exe` instead of `which`)
+    $cmd_path = where.exe $cmd_name
+    if ($LASTEXITCODE -eq 0)
+    {
+        Write-Host "$cmd_name found at $cmd_path"
+        return $cmd_path
+    }
+    else
+    {
+        Write-Host "$cmd_name not found in local system."
+        return $null
+    }
+}
+
+Function Get-DevCmdVersion {
+    param (
+        [Parameter(Mandatory)]
+        [string] $cmd_name
+    )
+
+    switch ($cmd_name)
+    {
+        "node"      { return Invoke-Expression "$cmd_name --version"; break}
+        "npm"       { return Invoke-Expression "$cmd_name --version"; break}
+        "certbot"   { return Invoke-Expression "$cmd_name --version"; break}
+        default     { return "n/a" } # sc, cmdkey, appcmd(?)
+    }
+}
+
+
+Function Build-DevCmds {
+
+    $devCmds = @{}
+    Write-Host "Probing"
+   
+    $computerName = $env:COMPUTERNAME
+    $devCmds[$computerName] = @{}
+    Write-Host "Computer name is $computerName"
+
+    $cmdList = @("node", "npm", "appcmd", "sc", "cmdkey")
+
+    foreach ($cmd_name in $cmdList) {
+        $cmd_path = Find-DevCmd $cmd_name
+        if ($cmd_path -ne $null)
+        {
+            $devCmds[$computerName][$cmd_name] = @{}
+            $devCmds[$computerName][$cmd_name]["path"] = $cmd_path
+
+            $version = Get-DevCmdVersion $cmd_name
+
+            $devCmds[$computerName][$cmd_name]["version"] = $version
+            Write-Host "$cmd_name version is $version"
+        }
+    }
+    
+    return $devCmds
+}
