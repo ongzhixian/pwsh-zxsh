@@ -99,7 +99,7 @@ Function Reset-Color {
     Returns true if current account is a Windows administrative account
 
     .EXAMPLE
-    # Show if has administrative rights
+    # Show if current user has administrative rights
     Assert-AdminRights
 #>
 Function Assert-AdminRights {
