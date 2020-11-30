@@ -90,3 +90,18 @@ Function Get-EmptyFolders {
 Function Reset-Color {
     [Console]::ResetColor()
 }
+
+<#
+    .SYNOPSIS
+    Assert-AdminRights
+
+    .DESCRIPTION
+    Returns true if current account is a Windows administrative account
+
+    .EXAMPLE
+    # Show if has administrative rights
+    Assert-AdminRights
+#>
+Function Assert-AdminRights {
+    return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
