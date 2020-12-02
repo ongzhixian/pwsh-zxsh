@@ -137,6 +137,11 @@ Function Get-DevCmdVersion {
         "node"      { return Invoke-Expression "$cmd_name --version"; break}
         "npm"       { return Invoke-Expression "$cmd_name --version"; break}
         "certbot"   { return Invoke-Expression "$cmd_name --version"; break}
+        "python"    { return Invoke-Expression "$cmd_name --version"; break}
+        "dart"      { return Invoke-Expression "$cmd_name --version"; break}
+        "git"       { return Invoke-Expression "$cmd_name --version"; break}
+        "javac"      { return Invoke-Expression "$cmd_name -version"; break}
+        "go"        { return Invoke-Expression "$cmd_name version"; break}
         default     { return "n/a" } # sc, cmdkey, appcmd(?)
     }
 }
@@ -151,7 +156,8 @@ Function Build-DevCmds {
     $devCmds[$computerName] = @{}
     Write-Host "Computer name is $computerName"
 
-    $cmdList = @("node", "npm", "appcmd", "sc", "cmdkey")
+    $cmdList = @("node", "npm", "appcmd", "sc", "cmdkey", "python", "go", "dart", "git", "javac")
+    # TODO: flutter, code, azuredatastudio, gpg, gradle, inspectcode, dotcover, java
 
     foreach ($cmd_name in $cmdList) {
         $cmd_path = Find-DevCmd $cmd_name
