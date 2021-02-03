@@ -175,3 +175,12 @@ Function Build-DevCmds {
     
     return $devCmds
 }
+
+Function Get-MultiInput {
+    param (
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string[]] $_
+    )
+    return $_
+}
