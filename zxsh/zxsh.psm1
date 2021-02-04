@@ -19,7 +19,7 @@ $Script:PrevPwd             = $null
 $Script:BranchName          = $null
 $Script:GitBranchExitCode   = $null
 $Script:DevCmds             = $null
-
+$Script:ModulePath          = Split-Path (Get-Module -Name zxsh).Path
 
 ########################################
 # 2.  Script variable(s) initialization

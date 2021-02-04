@@ -184,3 +184,19 @@ Function Get-MultiInput {
     )
     return $_
 }
+
+Function Test-Sqlite {
+    param (
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string[]] $_
+    )
+
+$Script:ModulePath
+    
+    $dllPath = Join-Path $Script:ModulePath "DLLs\System.Data.SQLite.dll"
+
+    Add-Type -Path $dllPath
+
+    return $_
+}
