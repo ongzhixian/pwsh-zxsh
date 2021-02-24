@@ -15,11 +15,13 @@
 ########################################
 # 1.  Script variable(s) declaration
 
+#$Script:RootModule          = 'zxsh'
+#$Script:ModuleVersion       = '0.0.6.9'
 $Script:PrevPwd             = $null
 $Script:BranchName          = $null
 $Script:GitBranchExitCode   = $null
 $Script:DevCmds             = $null
-$Script:ModulePath          = Split-Path (Get-Module -Name zxsh).Path
+$Script:ModulePath          = "$env:USERPROFILE\Documents\PowerShell\Modules\$RootModule\$ModuleVersion"
 
 ########################################
 # 2.  Script variable(s) initialization
@@ -66,6 +68,10 @@ else
 # 2.    Prompt
 . (Join-Path $PSScriptRoot zxsh-functions.ps1)
 
+
+########################################
+# 3b. Add required DLLs to $PSHOME
+Deploy-DLL "DLLs\Sqlite\runtimes" "SQLite.Interop.dll"
 
 ########################################
 # 4.  Define alias(es)

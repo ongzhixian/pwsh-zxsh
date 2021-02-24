@@ -180,23 +180,92 @@ Function Get-MultiInput {
     param (
         [Parameter(Mandatory)]
         [AllowEmptyString()]
-        [string[]] $_
+        [string[]] $line
     )
-    return $_
+    return $line
 }
 
 Function Test-Sqlite {
     param (
         [Parameter(Mandatory)]
         [AllowEmptyString()]
-        [string[]] $_
+        [string[]] $userInput
     )
 
-$Script:ModulePath
+    $Script:ModulePath
     
     $dllPath = Join-Path $Script:ModulePath "DLLs\System.Data.SQLite.dll"
 
     Add-Type -Path $dllPath
 
-    return $_
+    return $userInput
+}
+
+
+
+Function Get-MachineArchitecture {
+    param (
+        
+    )
+
+    switch ($env:OS)
+    {
+        "WINDOWS_NT" {
+            if ([System.Environment]::Is64BitOperatingSystem) {
+                return "win-x64"
+            }
+            else {
+                return "win-x86"
+            }
+        }
+
+        "OSX" {
+            if ([System.Environment]::Is64BitOperatingSystem) {
+                return "osx-x64"
+            }
+            else {
+                return "osx-x86"
+            }
+        }
+
+        "LINUX" {
+            if ([System.Environment]::Is64BitOperatingSystem) {
+                return "linux-x64"
+            }
+            else {
+                return "linux-x86"
+            }
+        }
+
+        default {
+            throw "Get-MachineArchitecture found unknown operating system: $env:OS"
+        }
+    }
+}
+
+function Deploy-Dll {
+    param (
+        [Parameter(Mandatory)]
+        [string] $dllModulePath
+        ,
+        [Parameter(Mandatory)]
+        [string] $dllName
+    )
+
+    $arch = Get-MachineArchitecture
+    $dllPath = Join-Path $Script:ModulePath $dllModulePath $arch $dllName
+
+    if (-not (Test-Path $dllPath))
+    {
+        throw "$dllName cannot be found at $dllPath"
+    }
+
+    # Check if DLL exists in $PSHOME
+    $destinationPath = Join-Path $PSHOME $dllName
+    if (Test-Path $destinationPath)
+    {
+        return
+    }
+
+    Copy-Item -Path $dllPath -Destination $destinationPath
 }
