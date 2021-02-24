@@ -15,13 +15,15 @@
 ########################################
 # 1.  Script variable(s) declaration
 
-#$Script:RootModule          = 'zxsh'
+$Script:ZxshModuleName      = $(Get-InstalledModule zxsh).Name
+$Script:ZxshModuleVersion   = $(Get-InstalledModule zxsh).Version
 #$Script:ModuleVersion       = '0.0.6.9'
+
 $Script:PrevPwd             = $null
 $Script:BranchName          = $null
 $Script:GitBranchExitCode   = $null
 $Script:DevCmds             = $null
-$Script:ModulePath          = "$env:USERPROFILE\Documents\PowerShell\Modules\$RootModule\$ModuleVersion"
+$Script:ModulePath          = "$env:USERPROFILE\Documents\PowerShell\Modules\$Script:ZxshModuleName\$Script:ZxshModuleVersion"
 
 ########################################
 # 2.  Script variable(s) initialization
