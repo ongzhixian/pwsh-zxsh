@@ -3,8 +3,11 @@
     This script defines the functions that are integrated in the usage of zxsh.
     
     Declared functions:
-    1.    Set-Title
-    2.    Prompt
+    1.  Set-Title
+    2.  Prompt
+    3.  Get-EmptyFolders
+    4.  Reset-Color
+    5.  Get-IntegrityHash
 #>
 
 
@@ -89,4 +92,86 @@ Function Get-EmptyFolders {
 #>
 Function Reset-Color {
     [Console]::ResetColor()
+}
+
+
+<#
+    .SYNOPSIS
+    Get-IntegrityHash
+
+    .DESCRIPTION
+    Get the integrity hash for URL
+
+    .EXAMPLE
+    # Get SHA256 (default) hash for integrity attribute 
+    Get-IntegrityHash "https://unpkg.com/react@17/umd/react.development.js"
+    # Get SHA384 hash for integrity attribute
+    Get-IntegrityHash "https://unpkg.com/react@17/umd/react.development.js" "sha384"
+#>
+function Get-IntegrityHash {
+    param (
+        [string] $url="",
+        [string] $hash="sha256"
+    )
+
+    switch ($hash.ToLowerInvariant())
+    {
+        "sha1" {
+            try {
+                $result = [Convert]::ToBase64String(
+                    [System.Security.Cryptography.SHA1]::Create().ComputeHash(
+                        [System.Net.WebClient]::new().DownloadData($url)
+                    )
+                )
+            }
+            catch {
+                Write-Error $_
+            }
+        }
+
+        "sha256" {
+            try {
+                $result = [Convert]::ToBase64String(
+                    [System.Security.Cryptography.SHA256]::Create().ComputeHash(
+                        [System.Net.WebClient]::new().DownloadData($url)
+                    )
+                )
+            }
+            catch {
+                Write-Error $_
+            }
+        }
+
+        "sha384" {
+            try {
+                $result = [Convert]::ToBase64String(
+                    [System.Security.Cryptography.SHA384]::Create().ComputeHash(
+                        [System.Net.WebClient]::new().DownloadData($url)
+                    )
+                )
+            }
+            catch {
+                Write-Error $_
+            }
+        }
+
+        "sha512" {
+            try {
+                $result = [Convert]::ToBase64String(
+                    [System.Security.Cryptography.SHA512]::Create().ComputeHash(
+                        [System.Net.WebClient]::new().DownloadData($url)
+                    )
+                )
+            }
+            catch {
+                Write-Error $_
+            }
+        }
+
+        default {
+            throw "Invalid $hash"
+        }
+    }
+
+    Write-Host "$hash-$result"
 }
