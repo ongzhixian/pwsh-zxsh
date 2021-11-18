@@ -1,6 +1,6 @@
 # Script use to update PowerShell Gallery
 # 
-$publishVersion = "0.0.5"
+$publishVersion = "0.0.6"
 switch ($env:COMPUTERNAME)
 {
     "ZOGA330" {
