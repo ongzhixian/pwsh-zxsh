@@ -19,4 +19,5 @@ jobs:
         $version = (Get-Content "version.txt")
         ls -R
         echo $version
-        Publish-Module -Name zxsh -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }} -RequiredVersion $version -Path './zxsh'
+        Get-PSRepository
+        # Publish-Module -Name zxsh -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }} -RequiredVersion $version -Path './zxsh'
