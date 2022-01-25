@@ -18,4 +18,5 @@ jobs:
       run: |
         $apiKey = (Get-Content "version.txt")
         ls -R
-        # Publish-Module -Name zxsh -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }} -RequiredVersion $apiKey
+        echo $apiKey
+        Publish-Module -Name zxsh -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }} -RequiredVersion $apiKey
