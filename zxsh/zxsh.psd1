@@ -69,7 +69,7 @@ PowerShellVersion = '7.0'
 NestedModules = @('zxsh.Providers.dll')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @("Set-Title", "Prompt", "Get-EmptyFolders", "Reset-Color", "Get-IntegrityHash")
+FunctionsToExport = @("Set-Title", "Prompt", "Get-EmptyFolders", "Reset-Color", "Get-MultiInput", "Get-IntegrityHash")
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

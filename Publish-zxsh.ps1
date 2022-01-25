@@ -20,6 +20,12 @@ switch ($env:COMPUTERNAME)
         break
     }
 
+    "ZBK15P" {
+        $apiKey = (Get-Content "C:\Users\zhixian\Documents\PowerShell\powershell-gallery-zxsh-api-key.txt")
+        Publish-Module -Name zxsh -NuGetApiKey $apiKey
+        break
+    }
+
     default {
         Write-Error "No setup found for $($env:COMPUTERNAME)"
     }

@@ -165,6 +165,149 @@ function Get-IntegrityHash {
             }
             catch {
                 Write-Error $_
+<#
+    .SYNOPSIS
+    Assert-AdminRights
+
+    .DESCRIPTION
+    Returns true if current account is a Windows administrative account
+
+    .EXAMPLE
+    # Show if current user has administrative rights
+    Assert-AdminRights
+#>
+Function Assert-AdminRights {
+    return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+Function Find-DevCmd {
+    param (
+        [Parameter(Mandatory)]
+        [string] $cmd_name
+    )
+
+    # Assuming on Windows (so we use `where.exe` instead of `which`)
+    $cmd_path = where.exe $cmd_name
+    if ($LASTEXITCODE -eq 0)
+    {
+        Write-Host "$cmd_name found at $cmd_path"
+        return $cmd_path
+    }
+    else
+    {
+        Write-Host "$cmd_name not found in local system."
+        return $null
+    }
+}
+
+Function Get-DevCmdVersion {
+    param (
+        [Parameter(Mandatory)]
+        [string] $cmd_name
+    )
+
+    switch ($cmd_name)
+    {
+        "node"      { return Invoke-Expression "$cmd_name --version"; break}
+        "npm"       { return Invoke-Expression "$cmd_name --version"; break}
+        "certbot"   { return Invoke-Expression "$cmd_name --version"; break}
+        "python"    { return Invoke-Expression "$cmd_name --version"; break}
+        "dart"      { return Invoke-Expression "$cmd_name --version"; break}
+        "git"       { return Invoke-Expression "$cmd_name --version"; break}
+        "javac"      { return Invoke-Expression "$cmd_name -version"; break}
+        "go"        { return Invoke-Expression "$cmd_name version"; break}
+        default     { return "n/a" } # sc, cmdkey, appcmd(?)
+    }
+}
+
+
+Function Build-DevCmds {
+
+    $devCmds = @{}
+    Write-Host "Probing"
+   
+    $computerName = $env:COMPUTERNAME
+    $devCmds[$computerName] = @{}
+    Write-Host "Computer name is $computerName"
+
+    $cmdList = @("node", "npm", "appcmd", "sc", "cmdkey", "python", "go", "dart", "git", "javac")
+    # TODO: flutter, code, azuredatastudio, gpg, gradle, inspectcode, dotcover, java
+
+    foreach ($cmd_name in $cmdList) {
+        $cmd_path = Find-DevCmd $cmd_name
+        if ($cmd_path -ne $null)
+        {
+            $devCmds[$computerName][$cmd_name] = @{}
+            $devCmds[$computerName][$cmd_name]["path"] = $cmd_path
+
+            $version = Get-DevCmdVersion $cmd_name
+
+            $devCmds[$computerName][$cmd_name]["version"] = $version
+            Write-Host "$cmd_name version is $version"
+        }
+    }
+    
+    return $devCmds
+}
+
+Function Get-MultiInput {
+    param (
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string[]] $line
+    )
+    return $line
+}
+
+Function Test-Sqlite {
+    param (
+        [Parameter(Mandatory)]
+        [AllowEmptyString()]
+        [string[]] $userInput
+    )
+
+    $Script:ModulePath
+    
+    $dllPath = Join-Path $Script:ModulePath "DLLs\System.Data.SQLite.dll"
+
+    Add-Type -Path $dllPath
+
+    return $userInput
+}
+
+
+
+Function Get-MachineArchitecture {
+    param (
+        
+    )
+
+    switch ($env:OS)
+    {
+        "WINDOWS_NT" {
+            if ([System.Environment]::Is64BitOperatingSystem) {
+                return "win-x64"
+            }
+            else {
+                return "win-x86"
+            }
+        }
+
+        "OSX" {
+            if ([System.Environment]::Is64BitOperatingSystem) {
+                return "osx-x64"
+            }
+            else {
+                return "osx-x86"
+            }
+        }
+
+        "LINUX" {
+            if ([System.Environment]::Is64BitOperatingSystem) {
+                return "linux-x64"
+            }
+            else {
+                return "linux-x86"
             }
         }
 
@@ -174,4 +317,35 @@ function Get-IntegrityHash {
     }
 
     Write-Host "$hash-$result"
+}
+            throw "Get-MachineArchitecture found unknown operating system: $env:OS"
+        }
+    }
+}
+
+function Deploy-Dll {
+    param (
+        [Parameter(Mandatory)]
+        [string] $dllModulePath
+        ,
+        [Parameter(Mandatory)]
+        [string] $dllName
+    )
+
+    $arch = Get-MachineArchitecture
+    $dllPath = Join-Path $Script:ModulePath $dllModulePath $arch $dllName
+
+    if (-not (Test-Path $dllPath))
+    {
+        throw "$dllName cannot be found at $dllPath"
+    }
+
+    # Check if DLL exists in $PSHOME
+    $destinationPath = Join-Path $PSHOME $dllName
+    if (Test-Path $destinationPath)
+    {
+        return
+    }
+
+    Copy-Item -Path $dllPath -Destination $destinationPath
 }
