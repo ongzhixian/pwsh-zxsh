@@ -16,7 +16,7 @@ jobs:
     - name: 'Build (Release)'
       shell: pwsh
       run: |
-        $apiKey = (Get-Content "version.txt")
+        $version = (Get-Content "version.txt")
         ls -R
-        echo $apiKey
-        Publish-Module -Name zxsh -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }} -RequiredVersion $apiKey
+        echo $version
+        Publish-Module -Name zxsh -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }} -RequiredVersion $version -Path './zxsh'
