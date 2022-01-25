@@ -51,7 +51,7 @@ if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
 # 5.  Module member export definitions
 
 # Functions
-Export-ModuleMember -Function Set-Title, Prompt, Get-EmptyFolders, Reset-Color, Get-IntegrityHash
+Export-ModuleMember -Function Set-Title, Prompt, Get-EmptyFolders, Reset-Color, Get-IntegrityHash, ConvertTo-IntId
 
 # Aliases
 Export-ModuleMember -Alias title

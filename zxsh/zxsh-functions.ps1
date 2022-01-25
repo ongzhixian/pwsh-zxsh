@@ -175,3 +175,28 @@ function Get-IntegrityHash {
 
     Write-Host "$hash-$result"
 }
+
+
+<#
+    .SYNOPSIS
+    ConvertTo-IntId
+
+    .DESCRIPTION
+    Compute a string into an integer
+
+    .EXAMPLE
+    # Compute a string "MiniTools.Web.Controllers.LoginController" into an integer 
+    ConvertTo-IntId MiniTools.Web.Controllers.LoginController
+#>
+Function ConvertTo-IntId {
+    param (
+        [string] $text=""
+    )
+
+    if ($text.Length -eq 0) {
+        Write-Host "Usage: ConvertTo-IntId 'MiniTools.Web.Controllers.LoginController' (Should yield result 251394) "
+        return
+    }
+
+    $w,$s=0; [System.Security.Cryptography.SHA1CryptoServiceProvider]::new().ComputeHash([Text.Encoding]::UTF8.GetBytes($text)).ForEach({$_*++$w}).ForEach({$s+=$_});"$s$($s%11)"
+}
