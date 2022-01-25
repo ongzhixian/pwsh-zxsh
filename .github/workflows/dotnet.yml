@@ -13,12 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: 'Build (Release)'
+    - name: 'Publish (Release)'
       shell: pwsh
       run: |
         $version = (Get-Content "version.txt")
-        ls -R
-        echo $version
-        Get-PSRepository
         Publish-Module -Path .\zxsh\ -NuGetApiKey ${{ secrets.POWERSHELL_GALLERY_API_KEY }}
         
