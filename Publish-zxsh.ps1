@@ -1,6 +1,6 @@
 # Script use to update PowerShell Gallery
 # 
-$publishVersion = "0.0.6"
+$publishVersion = "0.0.8"
 switch ($env:COMPUTERNAME)
 {
     "ZOGA330" {
@@ -17,6 +17,13 @@ switch ($env:COMPUTERNAME)
     "ACADIAN" {
         $apiKey = (Get-Content "C:\Users\zhixian\Documents\PowerShell\powershell-gallery-zxsh-api-key.txt")
         Publish-Module -Name zxsh -NuGetApiKey $apiKey
+        break
+    }
+
+    "ZBK15SP" {
+        Write-Host "ZBK15"
+        $apiKey = (Get-Content "C:\Users\zhixian\Documents\AppSecrets\PowerShellGallery\pwsh-api-key.txt")
+        Publish-Module -Name zxsh -NuGetApiKey $apiKey -RequiredVersion $publishVersion
         break
     }
 

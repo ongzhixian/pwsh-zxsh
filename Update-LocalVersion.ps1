@@ -30,6 +30,14 @@ switch ($env:COMPUTERNAME)
         break
     }
 
+    "ZBK15SP" {
+        Get-ChildItem 'C:\Apps\PwshRepository' | Where-Object { $_.Name -like 'zxsh*' } | ForEach-Object { Remove-Item $_ }
+        Publish-Module -Path 'C:\src\github.com\ongzhixian\zxsh\zxsh' -Repository 'pwsh-repository' -Force
+        Install-Module 'zxsh' -Repository 'pwsh-repository' -Force -AllowClobber
+        Import-Module zxsh -Force
+        break
+    }
+
     default {
         Write-Error "No setup found for $($env:COMPUTERNAME)"
     }

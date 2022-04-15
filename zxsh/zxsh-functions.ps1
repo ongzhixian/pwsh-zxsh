@@ -200,3 +200,11 @@ Function ConvertTo-IntId {
 
     $w,$s=0; [System.Security.Cryptography.SHA1CryptoServiceProvider]::new().ComputeHash([Text.Encoding]::UTF8.GetBytes($text)).ForEach({$_*++$w}).ForEach({$s+=$_});"$s$($s%11)"
 }
+
+function Test-IsAdmin {
+    if (-not $IsWindows) {
+        return $false
+    }
+    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+    return $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}

@@ -45,13 +45,16 @@ if ($false -eq [System.IO.Directory]::Exists($Script:profilePath))
 if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'title' })) {
     New-Alias -Name title -Value Set-Title
 }
+if ($null -eq (Get-Alias | Where-Object { $_.Name -like 'isadmin' })) {
+    New-Alias -Name isadmin -Value Test-IsAdmin
+}
 
 
 ########################################
 # 5.  Module member export definitions
 
 # Functions
-Export-ModuleMember -Function Set-Title, Prompt, Get-EmptyFolders, Reset-Color, Get-IntegrityHash, ConvertTo-IntId
+Export-ModuleMember -Function Set-Title, Prompt, Get-EmptyFolders, Reset-Color, Get-IntegrityHash, ConvertTo-IntId, Test-IsAdmin
 
 # Aliases
-Export-ModuleMember -Alias title
+Export-ModuleMember -Alias title, isadmin
